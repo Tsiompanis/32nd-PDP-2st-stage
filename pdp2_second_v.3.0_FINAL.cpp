@@ -15,8 +15,8 @@ int data[1000005];
 int main()
 {
 	//initializing freopen functions  
-    freopen("longsumk.in","r",stdin);        
-    freopen("longsumk.out","w",stdout);      
+    	freopen("longsumk.in","r",stdin);        
+    	freopen("longsumk.out","w",stdout);      
 	
 	//initializing variables and scanning them
 	int n, k, out, current, start;
