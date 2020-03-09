@@ -1,67 +1,70 @@
 /* USER: 32pdpu17  
 LANG: C++  
-TASK: longsumk*/  
+TASK: longsumk*/ 
+//ΑΓΝΟΗΣΕ ΤΑ 300 ΑΧΡΗΣΤΑ INCLUDES
 #include <stdio.h>        
 #include <cstdio>        
 #include <algorithm>        
 #include <iostream>      
 #include <array>  
 #include <vector>  
-#include <bits/stdc++.h>
-#include <unordered_map>  
-
+#include <bits/stdc++.h>  
+ 
 using namespace std;  
-vector<int> data;
-
-int find(vector<int> data, int n, int k)
-{
-	//initialize some helping variables for the current sum and the max sum
-	int current_sum = 0;
-	int max_length = 0;
-	//intialize unordered map to store the ending index
-	unordered_map<int, int> map;
-	
-	for(int i = 0; i < n; i++)
-	{
-		//add the current day's value to the sum
-		current_sum += data[i];
-		
-		//put the current sum with its index in the hash table!
-		map[current_sum] = i;
-		
-		//for when sub-array starts from index zero
-		if(current_sum == k) 
-			max_length = i + 1;
-		
-		//check if (current sum) - k is in the hash table
-		if(map.find(current_sum - k) != map.end())
-		{
-			//update the max length if the current length is bigger than the max length
-			if(max_length < (i - map[current_sum-k]))
-				max_length = i - map[current_sum-k];
-		}	
-	}
-	return max_length;
-}
+int data[1000005];
 
 int main()
 {
 	//initializing freopen functions  
-	freopen("longsumk.in","r",stdin);        
-    freopen("longsumk.out","w",stdout);      
+        freopen("longsumk.in","r",stdin);        
+        freopen("longsumk.out","w",stdout);      
 	
-	//initializing variables and scanning them
-	int n, k, help;
+	//variable initialization
+	int n, k, help, current_sum;
+	int out = 0;
+	int pointer1 = 0;
+	int pointer2 = 0;
+	
+	//scanning n and k
 	scanf("%d %d",&n, &k);
-	
-	//scanning all of the other days and putting them in the array
-	for(int i = 0; i < n; i++)
+
+	//making the array with the sums
+	for(int i = 1; i <= n; i++)
 	{
-		scanf(" %d",&help);
-		data.push_back(help);
+		scanf("%d",&help);
+		data[i] = data[i-1] + help;
 	}
 	
-	//we print the output coming from the "find" function and end the program!
-	printf("%d\n",find(data, n, k));
+	//while the second pointer is smaller than n:
+	while(pointer2 < n)
+	{
+		//find the sum of the current sub-array
+		current_sum = data[pointer2 + 1] - data[pointer1];
+		
+		//if the sum from the current sub-array is equal to k we update the "out" variable which stores the length of the longest sub-array with sum -k-
+		if(current_sum == k)
+		{
+			if(pointer2 - pointer1 + 1 > out)
+				out = pointer2 - pointer1 + 1;
+			
+			//increment the second pointer
+			pointer2++;
+		}
+		
+		//BUT if the current_sum is less than k then go ahead and increment the second pointer
+		else if(current_sum < k)
+			pointer2++;
+		
+		//else (the current_sum is bigger than k) increment the first pointer. And also if the first and second pointers are the same then increment the second one!
+		else
+		{
+			pointer1++;
+			if(pointer1 == pointer2)
+				pointer2++;
+		}
+	}
+	
+	//print the solutiom and exit the program!
+	printf("%d\n",out);
 	return 0;
 }
