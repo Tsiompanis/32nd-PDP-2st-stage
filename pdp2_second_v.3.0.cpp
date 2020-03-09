@@ -7,49 +7,61 @@ TASK: longsumk*/
 #include <iostream>      
 #include <array>  
 #include <vector>  
-#include <bits/stdc++.h>  
+#include <bits/stdc++.h>
+#include <unordered_map>  
 
 using namespace std;  
-int data[1000005];
+vector<int> data;
+
+int find(vector<int> data, int n, int k)
+{
+	//initialize some helping variables for the current sum and the max sum
+	int current_sum = 0;
+	int max_length = 0;
+	//intialize unordered map to store the ending index
+	unordered_map<int, int> map;
+	
+	for(int i = 0; i < n; i++)
+	{
+		//add the current day's value to the sum
+		current_sum += data[i];
+		
+		//put the current sum with its index in the hash table!
+		map[current_sum] = i;
+		
+		//for when sub-array starts from index zero
+		if(current_sum == k) 
+			max_length = i + 1;
+		
+		//check if (current sum) - k is in the hash table
+		if(map.find(current_sum - k) != map.end())
+		{
+			//update the max length if the current length is bigger than the max length
+			if(max_length < (i - map[current_sum-k]))
+				max_length = i - map[current_sum-k];
+		}	
+	}
+	return max_length;
+}
 
 int main()
 {
 	//initializing freopen functions  
-    freopen("longsumk.in","r",stdin);        
+	freopen("longsumk1.in","r",stdin);        
     freopen("longsumk.out","w",stdout);      
 	
 	//initializing variables and scanning them
-	int n, k, out, current_sum, start;
+	int n, k, help;
 	scanf("%d %d",&n, &k);
 	
-	//scanning the first day's value and put it at the 0th index so it doesn't get miscomputed
-	scanf("%d",&data[0]);
-	//setting the current sum to be the first value of the array
-	current_sum = data[0];
-	
 	//scanning all of the other days and putting them in the array
-	for(int i = 1; i < n; i++) scanf(" %d",&data[i]);
-	
-	//for every value of the array
-	for(int i = 1; i < n; i++)
+	for(int i = 0; i < n; i++)
 	{
-		//while the current sum exceeds the max money variable (stated 'K' in the problem), remove the starting elements until the current sum is less than the max avaliable money
-		while(current_sum > k && start < i - 1)
-		{
-			current_sum -= data[start];
-			//increment the starting point
-			start++;
-		}
-		
-		//if the current sum is equal to the max money variable ('k') AND the duration (i-1 - start) is bigger than the biggest duration. The biggest duration becomes the current duration
-		if(current_sum == k && i-1 - start > out)
-			out = i - start;
-		
-		//if n is grater than i then we add the the i-th element to the current sum
-		if (i < n)
-        	current_sum += data[i]; 
+		scanf(" %d",&help);
+		data.push_back(help);
 	}
-	//we print the output and end the program!
-	printf("%d\n",out);
+	
+	//we print the output coming from the "find" function and end the program!
+	printf("%d\n",find(data, n, k));
 	return 0;
 }
